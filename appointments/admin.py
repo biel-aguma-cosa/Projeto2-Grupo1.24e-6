@@ -5,12 +5,29 @@ from .models import  Appointment, MedicQualification, Patient, Medic, Qualificat
 @admin.register(Appointment)
 class AppointmentAdmin(admin.ModelAdmin):
     list_display  = ('patient','medic','date','time','subject','details','created_at','updated_at')
-    search_fields = ('name'   ,'date'        )
-    list_filter   = ('name'   ,'date' ,'time')
+    search_fields = ('patient','medic','date','time')
+    list_filter   = ('date' ,'time')
 
-@admin.register(Appointment)
-class AppointmentAdmin(admin.ModelAdmin):
-    list_display  = ('patient','medic','date','time','subject','details','created_at','updated_at')
-    search_fields = ('name'   ,'date'        )
-    list_filter   = ('name'   ,'date' ,'time')
- 
+@admin.register(Medic)
+class MedicAdmin(admin.ModelAdmin):
+    list_display  = ('name', 'last_name'     )
+    search_fields = ('name', 'qualifications')
+    list_filter   = ('name',                 )
+
+@admin.register(Patient)
+class PatientAdmin(admin.ModelAdmin):
+    list_display  = ('name', 'last_name'     )
+    search_fields = ('name',                 )
+    list_filter   = ('name',                 )
+
+@admin.register(MedicQualification)
+class MedicQualificationAdmin(admin.ModelAdmin):
+    list_display  = ('medic', 'qualification' , 'aquired_at')
+    search_fields = ('medic', 'qualification' )
+    list_filter   = ('medic', 'qualification' )
+
+@admin.register(Qualification)
+class QualificationAdmin(admin.ModelAdmin):
+    list_display  = ('name',)
+    search_fields = ('name',)
+    list_filter   = ('name',)
