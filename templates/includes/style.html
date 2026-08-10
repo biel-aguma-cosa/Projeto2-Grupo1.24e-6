@@ -1,0 +1,50 @@
+<style>
+    :root {
+        --wrap-background: #1727b9;
+        --wrap-text_color: #FFFFFF;
+    }
+    * {
+        border: none;
+        margin: none;
+    }
+    html, body {
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        margin : 0px;
+        padding: 0px;
+    }
+    #wrap {
+        display: flex;
+        flex-direction: column;
+        margin: none;
+        flex-grow: 1;
+    }
+    #wrap > header {
+        color           : var(--wrap-text_color);
+        background-color: var(--wrap-background);
+
+        display: flex;
+        padding: 2rem;
+    }
+    #wrap > footer {
+        color           : var(--wrap-text_color);
+        background-color: var(--wrap-background);
+
+        display: flex;
+        padding: 1rem;
+
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+    }
+    #wrap > main {
+        display: flex;
+        flex-grow: 1;
+        background-color: white;
+    }
+    #wrap > nav {
+        display: flex;
+        flex-direction: row;
+    }
+</style>
