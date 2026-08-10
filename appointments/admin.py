@@ -10,8 +10,8 @@ class AppointmentAdmin(admin.ModelAdmin):
 
 @admin.register(Medic)
 class MedicAdmin(admin.ModelAdmin):
-    list_display  = ('name','last_name')
-    search_fields = ('name','last_name')
+    list_display  = ('name','last_name','email')
+    search_fields = ('name','last_name','email')
     list_filter   = ('name',)
 
 @admin.register(MedicQualification)
@@ -22,8 +22,8 @@ class MedicQualificationAdmin(admin.ModelAdmin):
 
 @admin.register(Patient)
 class PatientAdmin(admin.ModelAdmin):
-    list_display  = ('name','last_name')
-    search_fields = ('name','last_name')
+    list_display  = ('name','last_name','email')
+    search_fields = ('name','last_name','email')
     list_filter   = ('name',)
 
 @admin.register(Qualification)

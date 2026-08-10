@@ -20,6 +20,6 @@ from django.urls import path
 import appointments.views as app_view
 
 urlpatterns = [
-    path('admin/', admin.site.urls, name='admin'),
+    path('admin/', admin.site.urls,),
     path(''      , app_view.index , name='index'),
 ]
