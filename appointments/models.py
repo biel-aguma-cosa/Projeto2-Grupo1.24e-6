@@ -3,13 +3,36 @@ import django.contrib.auth.models as auth_models
 
 # Create your models here.
 
+class MedicQualificationManager(models.Manager):
+    def add_link(self, medic, qualification):
+        return self.create(
+            medic         = medic        ,
+            qualification = qualification,
+        )
+
+class MedicManager(models.Manager):
+    def add_medic(self,name, last_name, email, qualifications):
+        user = auth_models.UserManager.create_user(
+            username = f'{name}.{last_name}'           ,
+            email    = f'{name}.{last_name}@domain.dot',
+            password = f'{last_name}321'               ,
+        )
+        medic = self.create(
+            name      = name     ,
+            last_name = last_name,
+            email     = email    ,
+            user      = user     ,
+        )
+        for qualification in qualifications:
+            MedicQualificationManager.add_link(medic, qualification)
+
+
 class Qualification(models.Model):
     name = models.CharField(max_length=30, verbose_name='Título')
     class Meta:
         ordering     = ['name']
         verbose_name = 'Qualificação'
         verbose_name_plural = 'Qualificações'
-
     def __str__(self):
         return f'{self.name}'
 
@@ -20,7 +43,7 @@ class Medic(models.Model):
     qualifications = models.ManyToManyField(
         Qualification, through='MedicQualification', related_name='medics')
 
-    user = models.OneToOneField(auth_models.User, on_delete=models.CASCADE)
+    user = models.OneToOneField(auth_models.User   , null=True, on_delete=models.CASCADE)
     class Meta:
         ordering     = ['name']
         verbose_name = 'Profissional'
@@ -42,10 +65,11 @@ class MedicQualification(models.Model):
 
     
 class Patient(models.Model):
-    name      = models.CharField (max_length=20,verbose_name='Nome')
+    name      = models.CharField (max_length=20,verbose_name='Nome'     )
     last_name = models.CharField (max_length=40,verbose_name='Sobrenome')
 
-    user = models.OneToOneField(auth_models.User, on_delete=models.CASCADE)
+    email = models.EmailField   (verbose_name='E-Mail', null=True,)
+    user  = models.OneToOneField(auth_models.User     , null=True, on_delete=models.CASCADE)
     class Meta:
         ordering     = ['name']
         verbose_name = 'Paciente'
