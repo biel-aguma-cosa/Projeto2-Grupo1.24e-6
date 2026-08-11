@@ -55,10 +55,19 @@ html, body {
 
 .dropdown-list {
     background-color: blanchedalmond;
+    padding: 1rem;
 }
 .dropdown-list > select  {
     background-color: red;
+    padding: .1rem;
 }
 .dropdown-list > section {
     background-color: aqua;
+    padding: 1rem;
+}
+.dropdown-list-block {
+    width  : 5rem;
+    height : 1rem;
+    padding: .1rem;
+    border-radius: .2rem;
 }
