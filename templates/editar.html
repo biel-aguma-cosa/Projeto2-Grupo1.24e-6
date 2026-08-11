@@ -1,0 +1,336 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Editar Consulta</title>
+
+<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+<!-- Navbar -->
+
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+
+    <div class="container">
+
+        <a class="navbar-brand fw-bold" href="#">
+            🏥 Agenda de Consultas
+        </a>
+
+
+        <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#menu"
+        >
+
+            <span class="navbar-toggler-icon"></span>
+
+        </button>
+
+
+        <div class="collapse navbar-collapse" id="menu">
+
+            <ul class="navbar-nav ms-auto">
+
+
+                <!-- Início -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link" href="#">
+                        Início
+                    </a>
+
+                </li>
+
+
+                <!-- Cadastrar -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link" href="#">
+                        Cadastrar
+                    </a>
+
+                </li>
+
+
+                <!-- Nova Consulta -->
+
+                <li class="nav-item">
+
+                    <a class="nav-link" href="#">
+                        Nova Consulta
+                    </a>
+
+                </li>
+
+
+                <!-- Minha Conta -->
+
+                <li class="nav-item dropdown">
+
+                    <a
+                        class="nav-link dropdown-toggle d-flex align-items-center"
+                        href="#"
+                        role="button"
+                        data-bs-toggle="dropdown"
+                        aria-expanded="false"
+                    >
+
+                        <!-- Foto do usuário -->
+
+                        <img
+                            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+                            width="35"
+                            height="35"
+                            class="rounded-circle me-2"
+                            alt="Foto do usuário"
+                        >
+
+                        Minha Conta
+
+                    </a>
+
+
+                    <!-- Menu da conta -->
+
+                    <ul class="dropdown-menu dropdown-menu-end">
+
+                        <li>
+
+                            <a class="dropdown-item" href="#">
+                                👤 Meu Perfil
+                            </a>
+
+                        </li>
+
+
+                        <li>
+
+                            <a class="dropdown-item" href="#">
+                                ⚙️ Configurações
+                            </a>
+
+                        </li>
+
+
+                        <li>
+
+                            <hr class="dropdown-divider">
+
+                        </li>
+
+
+                        <li>
+
+                            <a class="dropdown-item text-danger" href="#">
+                                🚪 Sair
+                            </a>
+
+                        </li>
+
+                    </ul>
+
+                </li>
+
+
+            </ul>
+
+        </div>
+
+    </div>
+
+</nav>
+
+
+
+<!-- Editar Consulta -->
+
+<div class="container mt-4">
+
+    <div class="row">
+
+        <div class="col-md-8">
+
+            <h1 class="display-5 fw-bold">
+                Editar Consulta
+            </h1>
+
+
+            <p class="lead">
+                Altere os dados da consulta selecionada.
+            </p>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- Formulário -->
+
+    <div class="card shadow mt-4">
+
+        <div class="card-header bg-dark text-white">
+
+            <h5 class="mb-0">
+                ✏️ Dados da Consulta
+            </h5>
+
+        </div>
+
+
+        <div class="card-body">
+
+            <form>
+
+
+                <!-- Paciente -->
+
+                <div class="mb-3">
+
+                    <label for="patient" class="form-label">
+                        Paciente
+                    </label>
+
+                    <select id="patient" class="form-select">
+
+                        <option>
+                            Paciente selecionado
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- Profissional -->
+
+                <div class="mb-3">
+
+                    <label for="medic" class="form-label">
+                        Profissional
+                    </label>
+
+                    <select id="medic" class="form-select">
+
+                        <option>
+                            Profissional selecionado
+                        </option>
+
+                    </select>
+
+                </div>
+
+
+
+                <!-- Assunto -->
+
+                <div class="mb-3">
+
+                    <label for="subject" class="form-label">
+                        Assunto
+                    </label>
+
+                    <input
+                        type="text"
+                        id="subject"
+                        class="form-control"
+                        value=""
+                    >
+
+                </div>
+
+
+
+                <!-- Data e Hora -->
+
+                <div class="row">
+
+                    <div class="col-md-6 mb-3">
+
+                        <label for="date" class="form-label">
+                            Data
+                        </label>
+
+                        <input
+                            type="date"
+                            id="date"
+                            class="form-control"
+                            value=""
+                        >
+
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+
+                        <label for="time" class="form-label">
+                            Hora
+                        </label>
+
+                        <input
+                            type="time"
+                            id="time"
+                            class="form-control"
+                            value=""
+                        >
+
+                    </div>
+
+                </div>
+
+
+
+                <!-- Detalhes -->
+
+                <div class="mb-3">
+
+                    <label for="details" class="form-label">
+                        Detalhes
+                    </label>
+
+                    <textarea
+                        id="details"
+                        class="form-control"
+                        rows="4"
+                        placeholder="Digite os detalhes da consulta..."
+                    ></textarea>
+
+                </div>
+
+
+
+                <!-- Botões -->
+
+                <button type="submit" class="btn btn-primary">
+                    💾 Salvar Alterações
+                </button>
+
+
+                <a href="#" class="btn btn-secondary">
+                    Cancelar
+                </a>
+
+
+            </form>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+<!-- Bootstrap JavaScript -->
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>

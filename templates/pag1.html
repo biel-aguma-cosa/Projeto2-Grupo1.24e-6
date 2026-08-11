@@ -2,15 +2,32 @@
 <html lang="pt-br">
 
 <head>
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>Agenda de Consultas</title>
 
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/css/bootstrap.min.css" rel="stylesheet">
+
+
+    <style>
+
+        .form-control:focus {
+            box-shadow: none;
+            border: none;
+            outline: none;
+        }
+
+    </style>
+
 </head>
 
+
 <body>
+
+
+    <!-- Navbar -->
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
 
@@ -21,7 +38,12 @@
             </a>
 
 
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu">
+            <button
+                class="navbar-toggler"
+                type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#menu"
+            >
 
                 <span class="navbar-toggler-icon"></span>
 
@@ -32,25 +54,139 @@
 
                 <ul class="navbar-nav ms-auto">
 
+
+                    <!-- Início -->
+
                     <li class="nav-item">
+
                         <a class="nav-link active" href="#">
                             Início
                         </a>
+
                     </li>
 
 
+
+                    <!-- Cadastrar-se -->
+
                     <li class="nav-item">
+
                         <a class="nav-link" href="#">
-                            Consultas
+                            Cadastrar
                         </a>
+
                     </li>
 
 
+
+                    <!-- Nova Consulta -->
+
                     <li class="nav-item">
+
                         <a class="nav-link" href="#">
                             Nova Consulta
                         </a>
+
                     </li>
+
+
+
+<!-- Minha Conta -->
+
+<li class="nav-item dropdown">
+
+    <a
+        class="nav-link dropdown-toggle d-flex align-items-center"
+        href="#"
+        role="button"
+        data-bs-toggle="dropdown"
+        aria-expanded="false"
+    >
+
+        <!-- Foto/Avatar -->
+
+        <img
+            src="https://cdn-icons-png.flaticon.com/512/149/149071.png"
+            width="35"
+            height="35"
+            class="rounded-circle me-2"
+            alt="Foto do usuário"
+        >
+
+        Minha Conta
+
+    </a>
+
+
+    <ul class="dropdown-menu dropdown-menu-end">
+
+        <li>
+            <a class="dropdown-item" href="#">
+                👤 Meu Perfil
+            </a>
+        </li>
+
+        <li>
+            <a class="dropdown-item" href="#">
+                ⚙️ Configurações
+            </a>
+        </li>
+
+        <li>
+            <hr class="dropdown-divider">
+        </li>
+
+        <li>
+            <a class="dropdown-item text-danger" href="#">
+                🚪 Sair
+            </a>
+        </li>
+
+    </ul>
+
+</li>
+
+                        <ul class="dropdown-menu dropdown-menu-end">
+
+
+                            <li>
+
+                                <a class="dropdown-item" href="#">
+                                    👤 Meu Perfil
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <a class="dropdown-item" href="#">
+                                    ⚙️ Configurações
+                                </a>
+
+                            </li>
+
+
+                            <li>
+
+                                <hr class="dropdown-divider">
+
+                            </li>
+
+
+                            <li>
+
+                                <a class="dropdown-item text-danger" href="#">
+                                    🚪 Sair
+                                </a>
+
+                            </li>
+
+
+                        </ul>
+
+                    </li>
+
 
                 </ul>
 
@@ -61,7 +197,11 @@
     </nav>
 
 
+
+    <!-- Conteúdo -->
+
     <div class="container mt-4">
+
 
         <div class="row">
 
@@ -77,116 +217,216 @@
                 </p>
 
 
-                <a href="#" class="btn btn-primary btn-lg">
+                <a href="#" class="btn btn-primary btn-lg mb-4">
                     Nova Consulta
                 </a>
 
             </div>
 
-
-            <div class="card shadow">
-
-                <div class="card-header bg-dark text-white">
-                    📅 Consultas Agendadas
-                </div>
+        </div>
 
 
-                <div class="card-body">
 
-                    <table class="table table-hover">
+        <!-- Consultas Agendadas -->
 
-                        <thead>
-
-                            <tr>
-
-                                <th>
-                                    Paciente
-                                </th>
-
-                                <th>
-                                    Profissional
-                                </th>
-
-                                <th>
-                                    Assunto
-                                </th>
-
-                                <th>
-                                    Data
-                                </th>
-
-                                <th>
-                                    Hora
-                                </th>
-                                <td>
-
-                                    <button class="btn btn-warning btn-sm">
-                                        Editar
-                                    </button>
+        <div class="card shadow">
 
 
-                                    <button class="btn btn-danger btn-sm">
-                                        Excluir
-                                    </button>
+            <!-- Cabeçalho -->
 
-                                </td>
-                            </tr>
+            <div class="card-header bg-dark text-white rounded-4">
 
-                        </thead>
+                <div class="row align-items-center">
 
 
-                        <tbody>
+                    <div class="col-md-5">
 
-                            <!-- Aqui o Django vai carregar as consultas -->
+                        📅 Consultas Agendadas
 
-                            {% for appointment in appointments %}
-
-                            <tr>
-
-                                <td>
-                                    {{ appointment.patient }}
-                                </td>
+                    </div>
 
 
-                                <td>
-                                    {{ appointment.medic }}
-                                </td>
+                    <div class="col-md-7">
+
+                        <div class="input-group">
+
+                            <input
+                                type="text"
+                                class="form-control rounded-pill"
+                                placeholder="Pesquisa..."
+                            >
 
 
-                                <td>
-                                    {{ appointment.subject }}
-                                </td>
+                            <button class="btn btn-primary rounded-pill ms-2">
 
+                                🔎 Pesquisar
 
-                                <td>
-                                    {{ appointment.date }}
-                                </td>
+                            </button>
 
+                        </div>
 
-                                <td>
-                                    {{ appointment.time }}
-                                </td>
+                    </div>
 
-
-                            </tr>
-
-                            {% endfor %}
-
-                        </tbody>
-
-                    </table>
 
                 </div>
 
             </div>
 
+
+
+            <!-- Corpo das consultas -->
+
+            <div class="card-body">
+
+
+                {% for appointment in appointments %}
+
+
+                <!-- Consulta -->
+
+                <div class="card mb-3">
+
+                    <div class="card-body">
+
+                        <div class="row">
+
+
+                            <!-- Paciente -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <strong>
+                                    👤 Paciente
+                                </strong>
+
+                                <div>
+                                    {{ appointment.patient }}
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- Profissional -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <strong>
+                                    👨‍⚕️ Profissional
+                                </strong>
+
+                                <div>
+                                    {{ appointment.medic }}
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- Assunto -->
+
+                            <div class="col-md-6 mb-3">
+
+                                <strong>
+                                    📝 Assunto
+                                </strong>
+
+                                <div>
+                                    {{ appointment.subject }}
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- Data -->
+
+                            <div class="col-md-3 mb-3">
+
+                                <strong>
+                                    📅 Data
+                                </strong>
+
+                                <div>
+                                    {{ appointment.date }}
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- Hora -->
+
+                            <div class="col-md-3 mb-3">
+
+                                <strong>
+                                    ⏰ Hora
+                                </strong>
+
+                                <div>
+                                    {{ appointment.time }}
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- Detalhes -->
+
+                            <div class="col-12 mb-3">
+
+                                <strong>
+                                    📄 Detalhes
+                                </strong>
+
+                                <div>
+                                    {{ appointment.details }}
+                                </div>
+
+                            </div>
+
+
+
+                            <!-- Ações -->
+
+                            <div class="col-12">
+
+                                <button class="btn btn-warning btn-sm">
+                                    ✏️ Editar
+                                </button>
+
+
+                                <button class="btn btn-danger btn-sm">
+                                    🗑️ Excluir
+                                </button>
+
+                            </div>
+
+
+                        </div>
+
+                    </div>
+
+                </div>
+
+
+                {% endfor %}
+
+
+            </div>
+
         </div>
+
 
     </div>
 
+
+
+    <!-- Bootstrap JavaScript -->
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js"></script>
 
 </body>
 
 </html>
+
