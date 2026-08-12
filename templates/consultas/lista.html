@@ -1,6 +1,13 @@
 {% extends 'base.html' %}
 {% block title %}Consultas | Agenda{% endblock %}
 {% block content %}
+<style>
+  .toggle-observacoes{transition:transform .12s ease; border:0;}
+  .toggle-observacoes[aria-expanded="true"]{transform:rotate(90deg)}
+  tr.obs-row td{padding-top:.25rem;padding-bottom:.25rem}
+  .obs-row{display:none}
+  .obs-row.visible{display:table-row}
+</style>
 <div class="d-flex justify-content-between page-header mb-4">
   <div><div class="eyebrow mb-2">Visão geral</div><h1 class="page-title mb-1">Consultas</h1><p class="text-secondary mb-0">Organize a agenda da clínica em um só lugar.</p></div>
   <a class="btn btn-primary d-inline-flex align-items-center gap-2 px-3" href="{% url 'consultas:criar' %}"><span class="fs-5">+</span> Nova consulta</a>
@@ -20,9 +27,40 @@
     </div>
   </form>
   {% if consultas %}
-  <div class="table-wrap"><table class="table"><thead><tr><th>Paciente</th><th>Profissional</th><th>Especialidade</th><th>Data e hora</th><th>Status</th><th></th></tr></thead><tbody>
-  {% for consulta in consultas %}<tr><td><div class="patient-name">{{ consulta.paciente }}</div><div class="patient-detail">{{ consulta.telefone|default:'Sem telefone' }}</div></td><td>{{ consulta.profissional }}</td><td>{{ consulta.especialidade }}</td><td><strong>{{ consulta.data|date:'d/m/Y' }}</strong><div class="patient-detail">{{ consulta.horario|time:'H:i' }}</div></td><td><span class="badge-status status-{{ consulta.status }}">{{ consulta.get_status_display }}</span></td><td class="text-end"><a class="action-link me-2" href="{% url 'consultas:editar' consulta.pk %}" title="Editar">Editar</a><a class="action-link text-danger" href="{% url 'consultas:excluir' consulta.pk %}" title="Excluir">Excluir</a></td></tr>{% endfor %}
+  <div class="table-wrap"><table class="table"><thead><tr><th style="width:1rem"></th><th>Paciente</th><th>Profissional</th><th>Especialidade</th><th>Data e hora</th><th>Status</th><th></th></tr></thead><tbody>
+  {% for consulta in consultas %}
+    <tr>
+      <td class="align-middle">
+        <button class="btn btn-sm btn-link toggle-observacoes p-0" type="button" data-target="#obs-{{ consulta.pk }}" aria-expanded="false" aria-controls="obs-{{ consulta.pk }}">▸</button>
+      </td>
+      <td><div class="patient-name">{{ consulta.paciente }}</div><div class="patient-detail">{{ consulta.telefone|default:'Sem telefone' }}</div></td>
+      <td class="align-middle">{{ consulta.profissional }}</td>
+      <td class="align-middle">{{ consulta.especialidade }}</td>
+      <td class="align-middle"><strong>{{ consulta.data|date:'d/m/Y' }}</strong><div class="patient-detail">{{ consulta.horario|time:'H:i' }}</div></td>
+      <td class="align-middle"><span class="badge-status status-{{ consulta.status }}">{{ consulta.get_status_display }}</span></td>
+      <td class="text-end align-middle"><a class="action-link me-2" href="{% url 'consultas:editar' consulta.pk %}" title="Editar">Editar</a><a class="action-link text-danger" href="{% url 'consultas:excluir' consulta.pk %}" title="Excluir">Excluir</a></td>
+    </tr>
+    <tr class="obs-row" id="obs-{{ consulta.pk }}">
+      <td colspan="7" class="bg-light small text-muted">{{ consulta.observacoes|default:'Sem observações'|linebreaksbr }}</td>
+    </tr>
+  {% endfor %}
   </tbody></table></div>
   {% else %}<div class="empty-state"><div class="empty-icon mb-3">✦</div><h3 class="h5">Nenhuma consulta encontrada</h3><p class="mb-3">Cadastre a primeira consulta ou ajuste seus filtros.</p><a class="btn btn-primary" href="{% url 'consultas:criar' %}">Cadastrar consulta</a></div>{% endif %}
 </section>
+{% endblock %}
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    document.querySelectorAll('.toggle-observacoes').forEach(function(btn){
+      btn.addEventListener('click', function(e){
+        var target = btn.getAttribute('data-target');
+        if(!target) return;
+        var row = document.querySelector(target);
+        if(!row) return;
+        var isVisible = row.classList.toggle('visible');
+        btn.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+      });
+    });
+  });
+</script>
 {% endblock %}
