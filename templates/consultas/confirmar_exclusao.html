@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block title %}Excluir consulta | Agenda{% endblock %}
+{% block content %}
+<div class="row justify-content-center"><div class="col-lg-6"><div class="panel p-4 p-md-5 text-center"><div class="empty-icon mb-3" style="background:#fbe8e6;color:#b34f48">!</div><h1 class="h3 mb-3">Excluir consulta?</h1><p class="text-secondary">A consulta de <strong>{{ consulta.paciente }}</strong>, em {{ consulta.data|date:'d/m/Y' }} às {{ consulta.horario|time:'H:i' }}, será removida permanentemente.</p><form method="post" class="d-flex justify-content-center gap-2 mt-4">{% csrf_token %}<a class="btn btn-outline-secondary" href="{% url 'consultas:lista' %}">Cancelar</a><button class="btn btn-danger" type="submit">Excluir consulta</button></form></div></div></div>
+{% endblock %}

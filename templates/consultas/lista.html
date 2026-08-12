@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block title %}Consultas | Agenda{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between page-header mb-4">
+  <div><div class="eyebrow mb-2">Visão geral</div><h1 class="page-title mb-1">Consultas</h1><p class="text-secondary mb-0">Organize a agenda da clínica em um só lugar.</p></div>
+  <a class="btn btn-primary d-inline-flex align-items-center gap-2 px-3" href="{% url 'consultas:criar' %}"><span class="fs-5">+</span> Nova consulta</a>
+</div>
+<div class="row g-3 mb-4">
+  <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-number">{{ total }}</div><div class="stat-label">Total de consultas</div></div></div>
+  <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-number">{{ agendadas }}</div><div class="stat-label">Agendadas</div></div></div>
+  <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-number">{{ confirmadas }}</div><div class="stat-label">Confirmadas</div></div></div>
+  <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-number">{{ realizadas }}</div><div class="stat-label">Realizadas</div></div></div>
+</div>
+<section class="panel overflow-hidden">
+  <form class="filter-bar p-3" method="get">
+    <div class="row g-2 align-items-center">
+      <div class="col-md-7"><input class="form-control" name="busca" value="{{ busca }}" placeholder="Buscar por paciente, profissional ou especialidade..."></div>
+      <div class="col-md-3"><select class="form-select" name="status"><option value="">Todos os status</option>{% for value, label in status_choices %}<option value="{{ value }}" {% if status_selecionado == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
+      <div class="col-md-2 d-grid"><button class="btn btn-dark" type="submit">Filtrar</button></div>
+    </div>
+  </form>
+  {% if consultas %}
+  <div class="table-wrap"><table class="table"><thead><tr><th>Paciente</th><th>Profissional</th><th>Especialidade</th><th>Data e hora</th><th>Status</th><th></th></tr></thead><tbody>
+  {% for consulta in consultas %}<tr><td><div class="patient-name">{{ consulta.paciente }}</div><div class="patient-detail">{{ consulta.telefone|default:'Sem telefone' }}</div></td><td>{{ consulta.profissional }}</td><td>{{ consulta.especialidade }}</td><td><strong>{{ consulta.data|date:'d/m/Y' }}</strong><div class="patient-detail">{{ consulta.horario|time:'H:i' }}</div></td><td><span class="badge-status status-{{ consulta.status }}">{{ consulta.get_status_display }}</span></td><td class="text-end"><a class="action-link me-2" href="{% url 'consultas:editar' consulta.pk %}" title="Editar">Editar</a><a class="action-link text-danger" href="{% url 'consultas:excluir' consulta.pk %}" title="Excluir">Excluir</a></td></tr>{% endfor %}
+  </tbody></table></div>
+  {% else %}<div class="empty-state"><div class="empty-icon mb-3">✦</div><h3 class="h5">Nenhuma consulta encontrada</h3><p class="mb-3">Cadastre a primeira consulta ou ajuste seus filtros.</p><a class="btn btn-primary" href="{% url 'consultas:criar' %}">Cadastrar consulta</a></div>{% endif %}
+</section>
+{% endblock %}
