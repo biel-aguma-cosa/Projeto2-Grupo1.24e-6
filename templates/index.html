@@ -1,32 +1,26 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
-    <link   rel="stylesheet" href="{% static 'style.css' %}">
-</head>
-<body>
-    <div id="wrap">
-        {% include 'includes/header.html' %}
-        {% include 'includes/nav.html' %}
-        <main>
-            <div>
-                <div class="dropdown-list">
-                    <select name="" id="">
-                        {% for q in qualifications %}
-                            <option value="{{ q.name }}">{{ q.name }}</option>
-                        {% endfor %}
-                    </select>
-                    <section>
-                        
-                    </section>
-                </div>
-            </div>
-        </main>
-        {% include 'includes/footer.html' %}
+{% extends 'base.html' %}
+
+{% block content %}
+<main>
+    <div style="background-color: antiquewhite;">
+        
+        {% if error %}
+            <h3 class="error">error</h3>
+        {% endif %}
+            
+        <form action="{% url 'test' %}" method="post">
+            {% csrf_token %}
+            {{ form }}
+            <button type="submit">boop</button>
+        </form>
+        {% if result %}
+            {{result.name}} <br>
+            {{result.lastname}} <br>
+            {{result.email}} <br><br>
+
+            {{result.username}} <br>
+            {{result.uemail}} <br>
+        {% endif %}
     </div>
-</body>
-<script src="{% static 'dropdown-list.js' %}"></script>
-</html>
+</main>
+{% endblock content %}

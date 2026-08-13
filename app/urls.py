@@ -22,4 +22,5 @@ import appointments.views as app_view
 urlpatterns = [
     path('admin/', admin.site.urls,),
     path(''      , app_view.index , name='index'),
+    path('test/' , app_view.test  , name='test' ),
 ]

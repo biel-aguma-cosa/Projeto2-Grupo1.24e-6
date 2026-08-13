@@ -4,20 +4,23 @@ import django.contrib.auth.models as auth_models
 # Create your models here.
 
 class MedicQualificationManager(models.Manager):
-    def add_link(self, medic, qualification):
-        return self.create(
+    @classmethod
+    def add_link(cls, medic, qualification):
+        return cls.create(
             medic         = medic        ,
             qualification = qualification,
         )
 
 class MedicManager(models.Manager):
-    def add_medic(self,name, last_name, email, qualifications):
+    @classmethod
+    def add_medic(cls, name, last_name, qualifications):
+        email    = f'{name}.{last_name}@domain.dot',
         user = auth_models.UserManager.create_user(
-            username = f'{name}.{last_name}'           ,
-            email    = f'{name}.{last_name}@domain.dot',
-            password = f'{last_name}321'               ,
+            username = f'{name}.{last_name}',
+            email    = email                ,
+            password = f'{last_name}321'    ,
         )
-        medic = self.create(
+        medic = cls.create(
             name      = name     ,
             last_name = last_name,
             email     = email    ,
@@ -25,6 +28,8 @@ class MedicManager(models.Manager):
         )
         for qualification in qualifications:
             MedicQualificationManager.add_link(medic, qualification)
+
+        return medic
 
 
 class Qualification(models.Model):
