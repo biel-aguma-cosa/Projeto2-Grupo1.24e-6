@@ -2,11 +2,27 @@
 {% block title %}Consultas | Agenda{% endblock %}
 {% block content %}
 <style>
-  .toggle-observacoes{transition:transform .12s ease; border:0;}
-  .toggle-observacoes[aria-expanded="true"]{transform:rotate(90deg)}
+  .toggle-observacoes{border:0; padding:0;}
+  .toggle-observacoes svg{transition:transform .12s ease; display:block}
+  .toggle-observacoes[aria-expanded="true"] svg{transform:rotate(90deg)}
   tr.obs-row td{padding-top:.25rem;padding-bottom:.25rem}
   .obs-row{display:none}
   .obs-row.visible{display:table-row}
+  /* remove blue focus ring for status checkboxes (visual only) */
+  .status-filter-menu .form-check-input:focus,
+  .status-checkbox:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+  /* prevent text selection inside the status filter menu */
+  .status-filter-menu,
+  .status-filter-menu .form-check-label,
+  .status-filter-menu .form-check-input {
+    -webkit-user-select: none; /* Safari */
+    -moz-user-select: none; /* Old Firefox */
+    -ms-user-select: none; /* IE10+/Edge */
+    user-select: none;
+  }
 </style>
 <div class="d-flex justify-content-between page-header mb-4">
   <div><div class="eyebrow mb-2">Visão geral</div><h1 class="page-title mb-1">Consultas</h1><p class="text-secondary mb-0">Organize a agenda da clínica em um só lugar.</p></div>
@@ -19,48 +35,232 @@
   <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-number">{{ realizadas }}</div><div class="stat-label">Realizadas</div></div></div>
 </div>
 <section class="panel overflow-hidden">
-  <form class="filter-bar p-3" method="get">
+  <form class="filter-bar p-3" method="get" onsubmit="return false;">
     <div class="row g-2 align-items-center">
-      <div class="col-md-7"><input class="form-control" name="busca" value="{{ busca }}" placeholder="Buscar por paciente, profissional ou especialidade..."></div>
-      <div class="col-md-3"><select class="form-select" name="status"><option value="">Todos os status</option>{% for value, label in status_choices %}<option value="{{ value }}" {% if status_selecionado == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select></div>
-      <div class="col-md-2 d-grid"><button class="btn btn-dark" type="submit">Filtrar</button></div>
+      <div class="col-12"><input id="search-input" class="form-control" name="busca" value="{{ busca }}" placeholder="Buscar por paciente, profissional ou especialidade..."></div>
     </div>
   </form>
   {% if consultas %}
-  <div class="table-wrap"><table class="table"><thead><tr><th style="width:1rem"></th><th>Paciente</th><th>Profissional</th><th>Especialidade</th><th>Data e hora</th><th>Status</th><th></th></tr></thead><tbody>
+  <div class="table-wrap"><table class="table"><thead>
+    <tr>
+      <th style="width:1rem"></th>
+      {% comment %} helper to build links: use base_qs from context {% endcomment %}
+      {% with order=order base=base_qs %}
+      <th><button type="button" class="btn btn-sm btn-sort" data-order="{{ sort_links.paciente.target }}">Paciente{% if sort_links.paciente.arrow %} <span class="text-muted">{{ sort_links.paciente.arrow }}</span>{% endif %}</button></th>
+      <th><button type="button" class="btn btn-sm btn-sort" data-order="{{ sort_links.profissional.target }}">Profissional{% if sort_links.profissional.arrow %} <span class="text-muted">{{ sort_links.profissional.arrow }}</span>{% endif %}</button></th>
+      <th><button type="button" class="btn btn-sm btn-sort" data-order="{{ sort_links.especialidade.target }}">Especialidade{% if sort_links.especialidade.arrow %} <span class="text-muted">{{ sort_links.especialidade.arrow }}</span>{% endif %}</button></th>
+      <th><button type="button" class="btn btn-sm btn-sort" data-order="{{ sort_links.data.target }}">Data e hora{% if sort_links.data.arrow %} <span class="text-muted">{{ sort_links.data.arrow }}</span>{% endif %}</button></th>
+      <th style="position:relative">
+        <div class="d-flex align-items-center gap-2">
+          <button type="button" class="btn btn-sm btn-sort" data-order="{{ sort_links.status.target }}">Status{% if sort_links.status.arrow %} <span class="text-muted">{{ sort_links.status.arrow }}</span>{% endif %}</button>
+          <button type="button" class="btn btn-sm btn-outline-secondary status-filter-toggle" aria-expanded="false" title="Filtrar status">⚙</button>
+        </div>
+        <div class="status-filter-menu card p-2 shadow" style="position:absolute; top:2.5rem; right:0; display:none; min-width:180px; z-index:50;">
+          <form class="m-0">
+            {% for value, label in status_choices %}
+            <div class="form-check">
+              <input class="form-check-input status-checkbox" type="checkbox" value="{{ value }}" id="status-{{ value }}">
+              <label class="form-check-label small" for="status-{{ value }}">{{ label }}</label>
+            </div>
+            {% endfor %}
+            <!-- selection applies automatically when checkbox changes -->
+          </form>
+        </div>
+      </th>
+      <th></th>
+      {% endwith %}
+    </tr>
+  </thead><tbody>
   {% for consulta in consultas %}
     <tr>
       <td class="align-middle">
-        <button class="btn btn-sm btn-link toggle-observacoes p-0" type="button" data-target="#obs-{{ consulta.pk }}" aria-expanded="false" aria-controls="obs-{{ consulta.pk }}">▸</button>
+        <button class="btn btn-sm btn-link toggle-observacoes p-0" type="button" data-target="#obs-{{ consulta.pk }}" aria-expanded="false" aria-controls="obs-{{ consulta.pk }}" aria-label="Mostrar observações">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
       </td>
       <td><div class="patient-name">{{ consulta.paciente }}</div><div class="patient-detail">{{ consulta.telefone|default:'Sem telefone' }}</div></td>
       <td class="align-middle">{{ consulta.profissional }}</td>
       <td class="align-middle">{{ consulta.especialidade }}</td>
       <td class="align-middle"><strong>{{ consulta.data|date:'d/m/Y' }}</strong><div class="patient-detail">{{ consulta.horario|time:'H:i' }}</div></td>
       <td class="align-middle"><span class="badge-status status-{{ consulta.status }}">{{ consulta.get_status_display }}</span></td>
-      <td class="text-end align-middle"><a class="action-link me-2" href="{% url 'consultas:editar' consulta.pk %}" title="Editar">Editar</a><a class="action-link text-danger" href="{% url 'consultas:excluir' consulta.pk %}" title="Excluir">Excluir</a></td>
+      <td class="text-end align-middle">
+        <a class="btn btn-sm btn-outline-secondary me-3" href="{% url 'consultas:editar' consulta.pk %}" title="Editar">Editar</a>
+        <button type="button" class="btn btn-sm btn-danger delete-btn" data-url="{% url 'consultas:excluir' consulta.pk %}" data-paciente="{{ consulta.paciente }}" data-data="{{ consulta.data|date:'d/m/Y' }}" data-horario="{{ consulta.horario|time:'H:i' }}" title="Excluir">Excluir</button>
+      </td>
     </tr>
     <tr class="obs-row" id="obs-{{ consulta.pk }}">
       <td colspan="7" class="bg-light small text-muted">{{ consulta.observacoes|default:'Sem observações'|linebreaksbr }}</td>
     </tr>
   {% endfor %}
   </tbody></table></div>
+  <!-- Delete confirmation modal (uses same POST endpoint as the confirma page) -->
+  <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="deleteModalLabel">Excluir consulta</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Fechar"></button>
+        </div>
+        <form id="delete-form" method="post" action="">
+          {% csrf_token %}
+          <div class="modal-body">
+            <p class="mb-0">Tem certeza que deseja excluir a consulta de <strong id="del-paciente"></strong>, em <strong id="del-data"></strong> às <strong id="del-horario"></strong>?</p>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-danger">Excluir consulta</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
   {% else %}<div class="empty-state"><div class="empty-icon mb-3">✦</div><h3 class="h5">Nenhuma consulta encontrada</h3><p class="mb-3">Cadastre a primeira consulta ou ajuste seus filtros.</p><a class="btn btn-primary" href="{% url 'consultas:criar' %}">Cadastrar consulta</a></div>{% endif %}
 </section>
 {% endblock %}
 {% block scripts %}
 <script>
   document.addEventListener('DOMContentLoaded', function(){
-    document.querySelectorAll('.toggle-observacoes').forEach(function(btn){
-      btn.addEventListener('click', function(e){
-        var target = btn.getAttribute('data-target');
-        if(!target) return;
-        var row = document.querySelector(target);
-        if(!row) return;
-        var isVisible = row.classList.toggle('visible');
-        btn.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+    // Header sort buttons: set order param and reload
+    document.querySelectorAll('.btn-sort').forEach(function(btn){
+      btn.addEventListener('click', function(){
+        var order = btn.getAttribute('data-order');
+        if(!order) return;
+        var params = new URLSearchParams(window.location.search);
+        params.set('order', order);
+        window.location.search = params.toString();
       });
     });
+
+    // toggle-observacoes handlers are bound inside initTableControls()
+    // Filters: unified AJAX updater for busca + statuses
+    function applyFiltersAjax(updateUrl){
+      var params = new URLSearchParams(window.location.search);
+      // statuses (from checked checkboxes in the menu)
+      params.delete('statuses');
+      var checked = Array.from(document.querySelectorAll('.status-checkbox:checked'));
+      checked.forEach(function(cb){ params.append('statuses', cb.value); });
+      if(checked.length === 0) params.delete('statuses');
+      // busca (from search input)
+      var searchEl = document.getElementById('search-input');
+      if(searchEl){
+        var q = (searchEl.value || '').trim();
+        if(q) params.set('busca', q);
+        else params.delete('busca');
+      }
+      var url = window.location.pathname + (params.toString() ? ('?' + params.toString()) : '');
+      fetch(url, {headers: {'X-Requested-With': 'XMLHttpRequest'}}).then(function(res){ return res.text(); }).then(function(html){
+        var parser = new DOMParser();
+        var doc = parser.parseFromString(html, 'text/html');
+        var newTbody = doc.querySelector('.table-wrap table tbody');
+        if(newTbody){
+          var oldTbody = document.querySelector('.table-wrap table tbody');
+          if(oldTbody) oldTbody.innerHTML = newTbody.innerHTML;
+          if(updateUrl){ try{ history.replaceState({}, '', url); }catch(e){} }
+          initTableControls();
+        }
+      }).catch(function(){ /* ignore */ });
+    }
+
+    // wire search input to live update (debounced)
+    var searchDebounce = null;
+    var searchInput = document.getElementById('search-input');
+    if(searchInput){
+      searchInput.addEventListener('input', function(){
+        if(searchDebounce) clearTimeout(searchDebounce);
+        searchDebounce = setTimeout(function(){ applyFiltersAjax(false); }, 150);
+      });
+    }
+
+    // Status filter dropdown behavior
+    var toggle = document.querySelector('.status-filter-toggle');
+    var menu = document.querySelector('.status-filter-menu');
+    if(toggle && menu){
+      toggle.addEventListener('click', function(){
+        var shown = menu.style.display === 'block';
+        menu.style.display = shown ? 'none' : 'block';
+        toggle.setAttribute('aria-expanded', (!shown).toString());
+        // initialize checkboxes from URL
+        var params = new URLSearchParams(window.location.search);
+        var current = params.getAll('statuses');
+        if(current.length === 1 && current[0].includes(',')){
+          current = current[0].split(',').filter(Boolean);
+        }
+        document.querySelectorAll('.status-checkbox').forEach(function(cb){
+          cb.checked = current.indexOf(cb.value) !== -1;
+        });
+      });
+      // apply selection automatically when checkboxes change using fetch (no reload)
+      function initTableControls(){
+        // toggle observações: store handler on element to allow clean remove
+        document.querySelectorAll('.toggle-observacoes').forEach(function(btn){
+          if(btn._obsHandler) btn.removeEventListener('click', btn._obsHandler);
+          btn._obsHandler = function(e){
+            var target = btn.getAttribute('data-target');
+            if(!target) return;
+            var row = document.querySelector(target);
+            if(!row) return;
+            var isVisible = row.classList.toggle('visible');
+            btn.setAttribute('aria-expanded', isVisible ? 'true' : 'false');
+          };
+          btn.addEventListener('click', btn._obsHandler);
+        });
+
+        // sort buttons: store handler per element
+        document.querySelectorAll('.btn-sort').forEach(function(btn){
+          if(btn._sortHandler) btn.removeEventListener('click', btn._sortHandler);
+          btn._sortHandler = function(){
+            var order = btn.getAttribute('data-order');
+            if(!order) return;
+            var params = new URLSearchParams(window.location.search);
+            params.set('order', order);
+            var url = window.location.pathname + '?' + params.toString();
+            window.location.href = url;
+          };
+          btn.addEventListener('click', btn._sortHandler);
+        });
+      }
+
+      var statusDebounce = null;
+      document.querySelectorAll('.status-checkbox').forEach(function(cb){
+        cb.addEventListener('change', function(){
+          if(statusDebounce) clearTimeout(statusDebounce);
+          statusDebounce = setTimeout(function(){ applyFiltersAjax(true); }, 200);
+        });
+      });
+      // initial bind
+      initTableControls();
+      // close menu when clicking outside
+      document.addEventListener('click', function(e){
+        if(!menu.contains(e.target) && !toggle.contains(e.target)){
+          menu.style.display = 'none';
+          toggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+
+    // Delete modal behavior: open modal and populate form/action
+    var deleteModalEl = document.getElementById('deleteModal');
+    if(deleteModalEl){
+      var bsDeleteModal = new bootstrap.Modal(deleteModalEl);
+      document.querySelectorAll('.delete-btn').forEach(function(btn){
+        btn.addEventListener('click', function(e){
+          var url = btn.getAttribute('data-url');
+          var paciente = btn.getAttribute('data-paciente');
+          var data = btn.getAttribute('data-data');
+          var horario = btn.getAttribute('data-horario');
+          // populate modal
+          var delPaciente = document.getElementById('del-paciente');
+          var delData = document.getElementById('del-data');
+          var delHorario = document.getElementById('del-horario');
+          if(delPaciente) delPaciente.textContent = paciente || '';
+          if(delData) delData.textContent = data || '';
+          if(delHorario) delHorario.textContent = horario || '';
+          var form = document.getElementById('delete-form');
+          if(form) form.action = url;
+          bsDeleteModal.show();
+        });
+      });
+    }
   });
 </script>
 {% endblock %}

@@ -11,8 +11,9 @@ class ConsultaForm(forms.ModelForm):
             "data", "horario", "status", "observacoes",
         ]
         widgets = {
-            "data": forms.DateInput(format="%Y-%m-%d", attrs={"type": "date"}),
-            "horario": forms.TimeInput(format="%H:%M", attrs={"type": "time"}),
+            # display placeholder in dd/mm/yyyy, accept ISO as fallback
+            "data": forms.DateInput(format="%d/%m/%Y", attrs={"type": "text", "placeholder": "dd/mm/yyyy"}),
+            "horario": forms.TimeInput(format="%H:%M", attrs={"type": "text", "placeholder": "HH:MM"}),
             "observacoes": forms.Textarea(attrs={"rows": 4}),
         }
 
@@ -21,3 +22,8 @@ class ConsultaForm(forms.ModelForm):
         for field in self.fields.values():
             field.widget.attrs["class"] = "form-control"
         self.fields["status"].widget.attrs["class"] = "form-select"
+        # accept both dd/mm/YYYY (user-facing) and ISO yyyy-mm-dd (browsers/backfills)
+        if 'data' in self.fields:
+            self.fields['data'].input_formats = ['%d/%m/%Y', '%Y-%m-%d']
+        if 'horario' in self.fields:
+            self.fields['horario'].input_formats = ['%H:%M']

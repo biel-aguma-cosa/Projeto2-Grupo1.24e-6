@@ -7,3 +7,26 @@
   <div class="d-flex justify-content-end gap-2 mt-5"><a class="btn btn-outline-secondary" href="{% url 'consultas:lista' %}">Cancelar</a><button class="btn btn-primary px-4" type="submit">Salvar consulta</button></div>
 </form>
 {% endblock %}
+{% block scripts %}
+<script>
+  document.addEventListener('DOMContentLoaded', function(){
+    try{
+      if(window.flatpickr){
+        flatpickr('#id_data', {
+          dateFormat: 'd/m/Y',
+          locale: 'pt',
+          allowInput: true
+        });
+        // initialize timepicker in 24-hour mode
+        flatpickr('#id_horario', {
+          enableTime: true,
+          noCalendar: true,
+          dateFormat: 'H:i',
+          time_24hr: true,
+          allowInput: true
+        });
+      }
+    }catch(e){ console.error('flatpickr init failed', e); }
+  });
+</script>
+{% endblock %}
