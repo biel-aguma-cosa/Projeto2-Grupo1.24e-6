@@ -2,6 +2,8 @@
 {% block title %}{{ titulo }} | Agenda{% endblock %}
 {% block content %}
 <div class="mb-4"><a class="text-secondary text-decoration-none small" href="{% url 'consultas:lista' %}">← Voltar para consultas</a><div class="eyebrow mt-4 mb-2">Cadastro</div><h1 class="page-title mb-1">{{ titulo }}</h1><p class="text-secondary">Preencha os dados para manter a agenda atualizada.</p></div>
+
+<!-- Formulário para cadastro e edição de consultas da agenda. -->
 <form method="post" class="panel p-4 p-md-5">{% csrf_token %}{% if form.non_field_errors %}<div class="alert alert-danger">{{ form.non_field_errors }}</div>{% endif %}
   <div class="row g-4"><div class="col-md-6"><label class="form-label" for="{{ form.paciente.id_for_label }}">Paciente</label>{{ form.paciente }}{{ form.paciente.errors }}</div><div class="col-md-3"><label class="form-label" for="{{ form.telefone.id_for_label }}">Telefone</label>{{ form.telefone }}</div><div class="col-md-3"><label class="form-label" for="{{ form.email.id_for_label }}">E-mail</label>{{ form.email }}{{ form.email.errors }}</div><div class="col-md-6"><label class="form-label" for="{{ form.profissional.id_for_label }}">Profissional</label>{{ form.profissional }}{{ form.profissional.errors }}</div><div class="col-md-6"><label class="form-label" for="{{ form.especialidade.id_for_label }}">Especialidade</label>{{ form.especialidade }}{{ form.especialidade.errors }}</div><div class="col-md-4"><label class="form-label" for="{{ form.data.id_for_label }}">Data</label>{{ form.data }}{{ form.data.errors }}</div><div class="col-md-4"><label class="form-label" for="{{ form.horario.id_for_label }}">Horário</label>{{ form.horario }}{{ form.horario.errors }}</div><div class="col-md-4"><label class="form-label" for="{{ form.status.id_for_label }}">Status</label>{{ form.status }}{{ form.status.errors }}</div><div class="col-12"><label class="form-label" for="{{ form.observacoes.id_for_label }}">Observações</label>{{ form.observacoes }}</div></div>
   <div class="d-flex justify-content-end gap-2 mt-5"><a class="btn btn-outline-secondary" href="{% url 'consultas:lista' %}">Cancelar</a><button class="btn btn-primary px-4" type="submit">Salvar consulta</button></div>
@@ -12,12 +14,14 @@
   document.addEventListener('DOMContentLoaded', function(){
     try{
       if(window.flatpickr){
+        // Inicializa o seletor de data em formato brasileiro.
         flatpickr('#id_data', {
           dateFormat: 'd/m/Y',
           locale: 'pt',
           allowInput: true
         });
-        // initialize timepicker in 24-hour mode
+
+        // Inicializa o seletor de horário em modo 24 horas.
         flatpickr('#id_horario', {
           enableTime: true,
           noCalendar: true,
@@ -26,7 +30,7 @@
           allowInput: true
         });
       }
-    }catch(e){ console.error('flatpickr init failed', e); }
+    }catch(e){ console.error('erro ao inicializar flatpickr', e); }
   });
 </script>
 {% endblock %}

@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap');
 
+/* Paleta de cores principal do sistema de agenda e clínica. */
 :root {
   --ink: #17212b;
   --muted: #6d7b88;
@@ -10,17 +11,26 @@
   --accent: #f3b562;
 }
 
+/* Base do layout da aplicação: fundo, tipografia e estrutura global. */
 body { background: #f7faf9; color: var(--ink); font-family: 'DM Sans', sans-serif; }
 h1, h2, h3, .brand-name { font-family: 'Space Grotesk', sans-serif; }
+
+/* Navbar principal com branding escuro e destaque institucional. */
 .navbar { background: #102d35; }
 .brand-mark { background: var(--accent); color: #102d35; width: 36px; height: 36px; display: grid; place-items: center; border-radius: 10px; font-weight: 700; }
 .brand-name { color: white; font-size: 1.05rem; letter-spacing: -.02em; }
+
+/* Contêiner geral usado em todas as páginas. */
 .page-shell { max-width: 1260px; }
 .page-title { font-size: clamp(1.8rem, 3vw, 2.5rem); letter-spacing: -.045em; }
 .eyebrow { color: var(--brand); font-size: .76rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; }
+
+/* Cards de estatísticas da agenda. */
 .stat-card { background: white; border: 1px solid var(--line); border-radius: 14px; padding: 1.15rem 1.25rem; height: 100%; }
 .stat-number { font: 700 1.75rem 'Space Grotesk', sans-serif; }
 .stat-label { color: var(--muted); font-size: .82rem; }
+
+/* Painéis e blocos de conteúdo do sistema. */
 .panel { background: white; border: 1px solid var(--line); border-radius: 16px; }
 .filter-bar { background: var(--soft); border-bottom: 1px solid var(--line); }
 .form-control, .form-select { border-color: #d8e0e3; border-radius: 9px; padding: .65rem .8rem; }
@@ -28,20 +38,28 @@ h1, h2, h3, .brand-name { font-family: 'Space Grotesk', sans-serif; }
 .btn-primary { background: var(--brand); border-color: var(--brand); }
 .btn-primary:hover { background: var(--brand-dark); border-color: var(--brand-dark); }
 .btn-outline-secondary { color: #50616c; border-color: #cbd5d9; }
+
+/* Tabela de consultas com leitura rápida da agenda. */
 .table { margin-bottom: 0; }
 .table > :not(caption) > * > * { padding: 1rem 1.15rem; border-bottom-color: var(--line); vertical-align: middle; }
 .table thead th { background: #fbfcfc; color: var(--muted); font-size: .7rem; letter-spacing: .08em; text-transform: uppercase; white-space: nowrap; }
 .patient-name { font-weight: 700; }
 .patient-detail { color: var(--muted); font-size: .78rem; }
+
+/* Badges visuais para cada status da consulta. */
 .badge-status { border-radius: 999px; font-size: .72rem; font-weight: 600; padding: .42rem .65rem; }
 .status-agendada { background: #e5f4f2; color: #08736b; }
 .status-confirmada { background: #e7f0fb; color: #2765a3; }
 .status-realizada { background: #edf0f2; color: #58656d; }
 .status-cancelada { background: #fbe8e6; color: #b34f48; }
+
+/* Estilo para links de ação e estado vazio. */
 .action-link { color: var(--muted); text-decoration: none; }
 .action-link:hover { color: var(--brand); }
 .empty-state { padding: 4rem 1rem; text-align: center; color: var(--muted); }
 .empty-icon { background: #e8f4f2; border-radius: 50%; color: var(--brand); display: inline-grid; height: 54px; place-items: center; width: 54px; }
+
+/* Ajustes responsivos para telas menores. */
 @media (max-width: 767px) {
   .table-wrap { overflow-x: auto; }
   .table { min-width: 850px; }

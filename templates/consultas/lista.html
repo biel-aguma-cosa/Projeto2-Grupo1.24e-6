@@ -2,49 +2,60 @@
 {% block title %}Consultas | Agenda{% endblock %}
 {% block content %}
 <style>
+  /* Estilo básico para o botão que expande os detalhes das observações. */
   .toggle-observacoes{border:0; padding:0;}
   .toggle-observacoes svg{transition:transform .12s ease; display:block}
   .toggle-observacoes[aria-expanded="true"] svg{transform:rotate(90deg)}
+
+  /* Linha de observações escondida até que o usuário clique para expandir. */
   tr.obs-row td{padding-top:.25rem;padding-bottom:.25rem}
   .obs-row{display:none}
   .obs-row.visible{display:table-row}
-  /* remove blue focus ring for status checkboxes (visual only) */
+
+  /* Remove o foco azul visual dos checkboxes do filtro por status. */
   .status-filter-menu .form-check-input:focus,
   .status-checkbox:focus {
     outline: none !important;
     box-shadow: none !important;
   }
-  /* prevent text selection inside the status filter menu */
+
+  /* Evita seleção de texto dentro do menu de filtros de status. */
   .status-filter-menu,
   .status-filter-menu .form-check-label,
   .status-filter-menu .form-check-input {
-    -webkit-user-select: none; /* Safari */
-    -moz-user-select: none; /* Old Firefox */
-    -ms-user-select: none; /* IE10+/Edge */
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
     user-select: none;
   }
 </style>
+
+<!-- Cabeçalho da página com resumo geral, título e botão para nova consulta. -->
 <div class="d-flex justify-content-between page-header mb-4">
   <div><div class="eyebrow mb-2">Visão geral</div><h1 class="page-title mb-1">Consultas</h1><p class="text-secondary mb-0">Organize a agenda da clínica em um só lugar.</p></div>
   <a class="btn btn-primary d-inline-flex align-items-center gap-2 px-3" href="{% url 'consultas:criar' %}"><span class="fs-5">+</span> Nova consulta</a>
 </div>
+
+<!-- Cards com estatísticas rápidas da agenda por status. -->
 <div class="row g-3 mb-4">
   <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-number">{{ total }}</div><div class="stat-label">Total de consultas</div></div></div>
   <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-number">{{ agendadas }}</div><div class="stat-label">Agendadas</div></div></div>
   <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-number">{{ confirmadas }}</div><div class="stat-label">Confirmadas</div></div></div>
   <div class="col-6 col-lg-3"><div class="stat-card"><div class="stat-number">{{ realizadas }}</div><div class="stat-label">Realizadas</div></div></div>
 </div>
+
 <section class="panel overflow-hidden">
+  <!-- Campo de busca geral para localizar consultas por paciente, profissional ou especialidade. -->
   <form class="filter-bar p-3" method="get" onsubmit="return false;">
     <div class="row g-2 align-items-center">
       <div class="col-12"><input id="search-input" class="form-control" name="busca" value="{{ busca }}" placeholder="Buscar por paciente, profissional ou especialidade..."></div>
     </div>
   </form>
+
   {% if consultas %}
   <div class="table-wrap"><table class="table"><thead>
     <tr>
       <th style="width:1rem"></th>
-      {% comment %} helper to build links: use base_qs from context {% endcomment %}
       {% with order=order base=base_qs %}
       <th><button type="button" class="btn btn-sm btn-sort" data-order="{{ sort_links.paciente.target }}">Paciente{% if sort_links.paciente.arrow %} <span class="text-muted">{{ sort_links.paciente.arrow }}</span>{% endif %}</button></th>
       <th><button type="button" class="btn btn-sm btn-sort" data-order="{{ sort_links.profissional.target }}">Profissional{% if sort_links.profissional.arrow %} <span class="text-muted">{{ sort_links.profissional.arrow }}</span>{% endif %}</button></th>
@@ -63,7 +74,6 @@
               <label class="form-check-label small" for="status-{{ value }}">{{ label }}</label>
             </div>
             {% endfor %}
-            <!-- selection applies automatically when checkbox changes -->
           </form>
         </div>
       </th>
@@ -74,6 +84,7 @@
   {% for consulta in consultas %}
     <tr>
       <td class="align-middle">
+        <!-- Botão para abrir/esconder as observações da consulta. -->
         <button class="btn btn-sm btn-link toggle-observacoes p-0" type="button" data-target="#obs-{{ consulta.pk }}" aria-expanded="false" aria-controls="obs-{{ consulta.pk }}" aria-label="Mostrar observações">
           <svg width="14" height="14" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><path d="M9 6l6 6-6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
@@ -93,7 +104,8 @@
     </tr>
   {% endfor %}
   </tbody></table></div>
-  <!-- Delete confirmation modal (uses same POST endpoint as the confirma page) -->
+
+  <!-- Modal de confirmação para remoção de uma consulta. -->
   <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
       <div class="modal-content">
@@ -120,7 +132,7 @@
 {% block scripts %}
 <script>
   document.addEventListener('DOMContentLoaded', function(){
-    // Header sort buttons: set order param and reload
+    // Inicializa os botões de ordenação da tabela de consultas.
     document.querySelectorAll('.btn-sort').forEach(function(btn){
       btn.addEventListener('click', function(){
         var order = btn.getAttribute('data-order');
@@ -131,22 +143,21 @@
       });
     });
 
-    // toggle-observacoes handlers are bound inside initTableControls()
-    // Filters: unified AJAX updater for busca + statuses
+    // Aplica filtros de busca e status sem recarregar a página inteira.
     function applyFiltersAjax(updateUrl){
       var params = new URLSearchParams(window.location.search);
-      // statuses (from checked checkboxes in the menu)
       params.delete('statuses');
       var checked = Array.from(document.querySelectorAll('.status-checkbox:checked'));
       checked.forEach(function(cb){ params.append('statuses', cb.value); });
       if(checked.length === 0) params.delete('statuses');
-      // busca (from search input)
+
       var searchEl = document.getElementById('search-input');
       if(searchEl){
         var q = (searchEl.value || '').trim();
         if(q) params.set('busca', q);
         else params.delete('busca');
       }
+
       var url = window.location.pathname + (params.toString() ? ('?' + params.toString()) : '');
       fetch(url, {headers: {'X-Requested-With': 'XMLHttpRequest'}}).then(function(res){ return res.text(); }).then(function(html){
         var parser = new DOMParser();
@@ -158,10 +169,9 @@
           if(updateUrl){ try{ history.replaceState({}, '', url); }catch(e){} }
           initTableControls();
         }
-      }).catch(function(){ /* ignore */ });
+      }).catch(function(){ /* ignora falhas leves de atualização */ });
     }
 
-    // wire search input to live update (debounced)
     var searchDebounce = null;
     var searchInput = document.getElementById('search-input');
     if(searchInput){
@@ -171,7 +181,6 @@
       });
     }
 
-    // Status filter dropdown behavior
     var toggle = document.querySelector('.status-filter-toggle');
     var menu = document.querySelector('.status-filter-menu');
     if(toggle && menu){
@@ -179,7 +188,8 @@
         var shown = menu.style.display === 'block';
         menu.style.display = shown ? 'none' : 'block';
         toggle.setAttribute('aria-expanded', (!shown).toString());
-        // initialize checkboxes from URL
+
+        // Reconstrói o estado dos checkboxes com base nos parâmetros da URL.
         var params = new URLSearchParams(window.location.search);
         var current = params.getAll('statuses');
         if(current.length === 1 && current[0].includes(',')){
@@ -189,9 +199,10 @@
           cb.checked = current.indexOf(cb.value) !== -1;
         });
       });
-      // apply selection automatically when checkboxes change using fetch (no reload)
+
+      // Reaplica os controles da tabela após qualquer atualização em HTML via fetch.
       function initTableControls(){
-        // toggle observações: store handler on element to allow clean remove
+        // Abre ou fecha a linha de observações para a consulta selecionada.
         document.querySelectorAll('.toggle-observacoes').forEach(function(btn){
           if(btn._obsHandler) btn.removeEventListener('click', btn._obsHandler);
           btn._obsHandler = function(e){
@@ -205,7 +216,7 @@
           btn.addEventListener('click', btn._obsHandler);
         });
 
-        // sort buttons: store handler per element
+        // Seta os handlers dos botões de ordenação após atualizar o corpo da tabela.
         document.querySelectorAll('.btn-sort').forEach(function(btn){
           if(btn._sortHandler) btn.removeEventListener('click', btn._sortHandler);
           btn._sortHandler = function(){
@@ -227,9 +238,8 @@
           statusDebounce = setTimeout(function(){ applyFiltersAjax(true); }, 200);
         });
       });
-      // initial bind
       initTableControls();
-      // close menu when clicking outside
+
       document.addEventListener('click', function(e){
         if(!menu.contains(e.target) && !toggle.contains(e.target)){
           menu.style.display = 'none';
@@ -238,7 +248,6 @@
       });
     }
 
-    // Delete modal behavior: open modal and populate form/action
     var deleteModalEl = document.getElementById('deleteModal');
     if(deleteModalEl){
       var bsDeleteModal = new bootstrap.Modal(deleteModalEl);
@@ -248,13 +257,15 @@
           var paciente = btn.getAttribute('data-paciente');
           var data = btn.getAttribute('data-data');
           var horario = btn.getAttribute('data-horario');
-          // populate modal
+
+          // Preenche o modal com os dados da consulta a ser excluída.
           var delPaciente = document.getElementById('del-paciente');
           var delData = document.getElementById('del-data');
           var delHorario = document.getElementById('del-horario');
           if(delPaciente) delPaciente.textContent = paciente || '';
           if(delData) delData.textContent = data || '';
           if(delHorario) delHorario.textContent = horario || '';
+
           var form = document.getElementById('delete-form');
           if(form) form.action = url;
           bsDeleteModal.show();

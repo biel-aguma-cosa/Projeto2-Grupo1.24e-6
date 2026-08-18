@@ -5,10 +5,13 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>{% block title %}Agenda de Consultas{% endblock %}</title>
+  <!-- Carrega o CSS do Bootstrap para a estrutura visual da aplicação. -->
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Carrega os estilos personalizados do projeto para cards, tabela e layout. -->
   <link rel="stylesheet" href="{% static 'css/app.css' %}">
 </head>
 <body>
+  <!-- Barra superior com branding e acesso rápido à área administrativa. -->
   <nav class="navbar navbar-expand-lg py-3">
     <div class="container page-shell">
       <a class="d-flex align-items-center gap-2 text-decoration-none" href="{% url 'consultas:lista' %}">
@@ -19,14 +22,17 @@
       </div>
     </div>
   </nav>
+
+  <!-- Local onde cada página do sistema injeta seu conteúdo principal. -->
   <main class="container page-shell py-5">
     {% if messages %}
       {% for message in messages %}<div class="alert alert-success border-0 shadow-sm mb-4" role="alert">{{ message }}</div>{% endfor %}
     {% endif %}
     {% block content %}{% endblock %}
   </main>
+
+  <!-- Scripts principais usados em todas as páginas: Bootstrap e seletor de data. -->
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
-  <!-- flatpickr (lightweight datepicker) -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/flatpickr/dist/l10n/pt.js"></script>
